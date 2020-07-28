@@ -22,6 +22,18 @@ def roll_dice(num_rolls, dice=six_sided):
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    sum_of, boole = 0, False
+    for i in range(num_rolls):
+        d = dice()
+        if d is not 1:
+            sum_of += d
+        else:
+            boole = True
+
+    if boole:
+        return 1
+    else:
+        return sum_of
     # END PROBLEM 1
 
 
@@ -32,6 +44,10 @@ def free_bacon(score):
     """
     assert score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
+    if score < 10:
+        return 10 - score + 0
+    else:
+        return 10 - (score % 10) + (score // 10)
     "*** YOUR CODE HERE ***"
     # END PROBLEM 2
 
@@ -51,6 +67,10 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert opponent_score < 100, 'The game should be over.'
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    if num_rolls == 0:
+        return free_bacon(opponent_score)
+    else:
+        return roll_dice(num_rolls, dice)
     # END PROBLEM 3
 
 
@@ -60,6 +80,10 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    if ((player_score % 10) - (opponent_score % 10) != (opponent_score // 10)):
+        return False
+    else:
+        return True
     # END PROBLEM 4
 
 
@@ -100,11 +124,24 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    d0, d1 = strategy0(score0, score 1), strategy1(score1, score 0)
+    if who:
+        score1 = take_turn(d1, score0, dice)
+    else:
+        score0 = take_turn(d0, score1, dice)
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
-    # END PROBLEM 6
+    if feral_hogs:
+        if who:
+            if score1 - d1 is 2:
+                score1 += 3
+        else:
+            if score0 - d0 is 2:
+                score0 += 3
+
+        # END PROBLEM 6
     return score0, score1
 
 
@@ -117,6 +154,7 @@ def say_scores(score0, score1):
     """A commentary function that announces the score for each player."""
     print("Player 0 now has", score0, "and Player 1 now has", score1)
     return say_scores
+
 
 def announce_lead_changes(last_leader=None):
     """Return a commentary function that announces lead changes.
@@ -142,6 +180,7 @@ def announce_lead_changes(last_leader=None):
             print('Player', leader, 'takes the lead by', abs(score0 - score1))
         return announce_lead_changes(leader)
     return say
+
 
 def both(f, g):
     """Return a commentary function that says what f says, then what g says.
@@ -284,7 +323,6 @@ def run_experiments():
         print('final_strategy win rate:', average_win_rate(final_strategy))
 
     "*** You may add additional experiments as you wish ***"
-
 
 
 def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
